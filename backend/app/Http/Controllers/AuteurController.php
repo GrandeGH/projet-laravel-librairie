@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+// par Georges
+
 use App\Models\Auteur;
 use App\Http\Requests\StoreAuteurRequest;
 use App\Http\Requests\UpdateAuteurRequest;
+use Illuminate\Http\Request;
 
 class AuteurController extends Controller
 {
@@ -13,54 +16,35 @@ class AuteurController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Auteur::all(), 200);
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'auteur' => 'required|string',
+        ]);
+
+        $auteur = Auteur::create($validated);
+
+        return response()->json($auteur, 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreAuteurRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Auteur $auteur)
     {
-        //
+        return response()->json($auteur);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Auteur $auteur)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateAuteurRequest $request, Auteur $auteur)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Auteur $auteur)
-    {
-        //
+        $auteur = Auteur::find($id); 
+        $auteur->delete();
+        return redirect('/indexAuteur');
     }
 }

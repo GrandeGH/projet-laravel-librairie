@@ -11,66 +11,57 @@ class LibrairieController extends Controller
 {
     public function index()
     {
-    {
-        $livres = Librairie::all();
-        return view('indexLivre', compact('livres'));
-    }
+        return response()->json(Librairie::all(), 200);
     }
 
     public function create()
     {
-        return view('createLivre');
+
     }
 
     public function store(Request $request)
     {
-        $livre = new Librairie;
-        $livre->titre = $request->titre;
-        $livre->auteur = $request->auteur;
-        $livre->genre = $request->genre;
-        $livre->save();
+       $validated = $request->validate([
+            'titre' => 'required|string',
+            'auteur' => 'required|string',
+            'genre' => 'required|string',
+       ]);
 
-        return redirect('/indexLivre');
+        $livre = Librairie::create($validated);
+
+        return response()->json($livre, 201);
     }
 
     public function show($id)
     {
-        $livre = Librairie::find($id); 
-        return view('showLivre', compact('livre'));
+        $livre = Librairie::find($id);
+        return response()->json($livre);
     }
 
     public function edit($id)
     {
-        $livre = Librairie::find($id); 
-        return view('editLivre', compact('livre'));
+ 
     }
 
-    public function update(UpdateLibrairieRequest $request, Librairie $librairie)
+    public function update(Request $request, $id)
     {
         // Trouve le livre
         $livre = Librairie::find($id);
 
-        // Valider
         $request->validate([
             'titre' => 'required|string',
-            'genre' => 'required|string',
             'auteur' => 'required|string',
+            'genre' => 'required|string',
         ]);
-        // Mettre à jour les données
-        $livre->titre = $request->titre;
-        $livre->genre = $request->genre;
-        $livre->auteur = $request->auteur;
 
-        // Sauvegarder dans la base de données
-        $livre->save();
+        $livre->update($validated);
 
-        return redirect('/indexLivre');
+        return response()->json($livre, 200);
     }
 
-    public function destroy($id)
+    public function destroy(Librairie $livre)
     {
-        $livre = Librairie::find($id); 
-        $livre->delete();
-        return redirect('/indexLivre');
+        Librairie::find($id)->delete();
+        return response()->json(null, 204);
     }
 }
