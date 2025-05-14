@@ -30,7 +30,7 @@ class LibrairieController extends Controller
         $livre->genre = $request->genre;
         $livre->save();
 
-        return redirect('/indexEdit');
+        return redirect('/indexLivre');
     }
 
     public function show($id)
@@ -69,7 +69,7 @@ class LibrairieController extends Controller
 
     public function destroy($id)
     {
-        $livre = ExoEdit::find($id); 
+        $livre = Librairie::find($id); 
         $livre->delete();
         return redirect('/indexLivre');
     }
